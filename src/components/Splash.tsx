@@ -47,7 +47,8 @@ export default function Splash() {
         ? Promise.resolve()
         : new Promise((r) => window.addEventListener('load', r, { once: true })),
       ...Array.from(document.images)
-        .filter((img) => !img.complete)
+        // "lazy" slike se učitavaju tek kad im se priđe skrolom — na njih ne čekamo
+        .filter((img) => !img.complete && img.loading !== 'lazy')
         .map(
           (img) =>
             new Promise((r) => {

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -8,8 +9,8 @@ import { prefersReducedMotion } from '@/lib/motion'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger)
 
-/** Sivi placeholder preko cele širine koji se "otvara" dok ulazi u ekran. */
-export default function WideImage({ label = 'Image placeholder' }: { label?: string }) {
+/** Slika preko cele širine koja se "otvara" iz ovala dok ulazi u ekran (bez src → sivi placeholder). */
+export default function WideImage({ src, label = 'Image placeholder' }: { src?: string; label?: string }) {
   const ref = useRef<HTMLDivElement>(null)
 
   useGSAP(
@@ -31,8 +32,10 @@ export default function WideImage({ label = 'Image placeholder' }: { label?: str
 
   return (
     <div ref={ref} data-stage="hide" className="h-[90svh] min-h-[420px]">
-      <div data-img className="h-full w-full overflow-hidden" role="img" aria-label={label}>
-        <div data-img-inner className="placeholder-grey h-full w-full" />
+      <div data-img className="relative h-full w-full overflow-hidden bg-void">
+        <div data-img-inner className={`relative h-full w-full ${src ? '' : 'placeholder-grey'}`} role={src ? undefined : 'img'} aria-label={src ? undefined : label}>
+          {src && <Image src={src} alt={label} fill sizes="100vw" className="object-cover object-[45%_55%]" />}
+        </div>
       </div>
     </div>
   )

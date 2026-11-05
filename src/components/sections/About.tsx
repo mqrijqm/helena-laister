@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Reveal from '@/components/Reveal'
 import CodeGlyph from '@/components/CodeGlyph'
 import { ABOUT } from '@/lib/content'
@@ -8,14 +9,17 @@ export default function About() {
       <div className="grid items-start gap-14 lg:grid-cols-[0.8fr_1.2fr]">
         {/* fotografija — placeholder dok Helena ne pošalje materijal */}
         <div className="relative lg:sticky lg:top-28">
-          <div
-            role="img"
-            aria-label="Portrait of Helena — photo placeholder"
-            className="photo-placeholder relative aspect-[4/5] w-full max-w-[460px] overflow-hidden rounded-[999px_999px_12px_12px]"
-          >
-            <CodeGlyph code="eckasha" className="absolute inset-[14%] text-white/70" strokeWidth={1} />
+          <div className="relative aspect-[4/5] w-full max-w-[460px] overflow-hidden rounded-[999px_999px_12px_12px] bg-ink">
+            <Image
+              src="/images/helena-tattoo.webp"
+              alt="Helena from behind, wrapped in orange silk, a large Buddha and lotus tattoo across her back"
+              fill
+              sizes="(min-width: 1024px) 460px, 90vw"
+              className="object-cover object-[50%_35%]"
+            />
+            <CodeGlyph code="eckasha" className="pointer-events-none absolute inset-[14%] text-white/30" strokeWidth={1} />
           </div>
-          <p className="t-code mt-4 text-ink/60">photo · helena</p>
+          <p className="t-code mt-4 text-ink/60">helena · the lotus & the buddha</p>
         </div>
 
         <Reveal stagger={0.1}>

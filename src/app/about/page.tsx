@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import PageHero from '@/components/PageHero'
 import BreathBar from '@/components/about/BreathBar'
 import PortalPin from '@/components/about/PortalPin'
@@ -33,7 +34,7 @@ export default function AboutPage() {
       </Reveal>
 
       <PortalPin />
-      <WideImage label="Helena — image placeholder" />
+      <WideImage src="/images/helena-ladder.webp" label="Helena climbing a rope ladder above the open sea" />
 
       {/* principi + osnivač */}
       <section className="relative overflow-hidden bg-lilac px-5 pb-[clamp(5rem,10vw,10rem)] pt-[clamp(4rem,5vw,5rem)] text-ink md:px-10">
@@ -69,12 +70,15 @@ export default function AboutPage() {
               About
             </p>
           </Reveal>
-          <div
-            role="img"
-            aria-label="Portrait of Helena — photo placeholder"
-            className="photo-placeholder relative order-3 aspect-[3/4.4] w-full overflow-hidden rounded-[999px_999px_12px_12px] md:order-2"
-          >
-            <CodeGlyph code="star-gate" className="absolute inset-[16%] text-white/70" strokeWidth={1} />
+          <div className="relative order-3 aspect-[3/4.4] w-full overflow-hidden rounded-[999px_999px_12px_12px] bg-ink md:order-2">
+            <Image
+              src="/images/helena-temple.webp"
+              alt="Helena sitting on the floor of a temple during prayer, black and white"
+              fill
+              sizes="(min-width: 768px) 28vw, 90vw"
+              className="object-cover object-[96%_60%]"
+            />
+            <CodeGlyph code="star-gate" className="pointer-events-none absolute inset-[16%] text-white/25" strokeWidth={1} />
           </div>
           <Reveal className="order-2 md:order-3 md:text-right">
             <p data-reveal className="t-h2 italic text-white">
