@@ -129,10 +129,10 @@ export default function KeyCodeMorph({
         const th = u * Math.PI * 2
         const chx =
           (0.62 * Math.sin(f1 * th + T * 0.31) + 0.3 * Math.sin(f2 * th - T * 0.23 + 1.3)) * breathe +
-          jitter * Math.sin(i * 12.9898 + T * 3.1)
+          jitter * Math.sin(th * 23 + T * 3.1)
         const chy =
           (0.62 * Math.cos(g1 * th + T * 0.27) + 0.3 * Math.sin(g2 * th + T * 0.19)) * breathe +
-          jitter * Math.cos(i * 78.233 + T * 2.7)
+          jitter * Math.cos(th * 31 + T * 2.7)
 
         // svaka čestica kreće sa malim zakašnjenjem → kod se "skuplja", ne skače
         const m = easeInOut(clamp01(M * 1.35 - delay[i]))
@@ -214,10 +214,15 @@ export default function KeyCodeMorph({
         n = nextN
         targets = targetsFor(n)
         delay = new Float32Array(n)
-        for (let i = 0; i < n; i++) delay[i] = ((Math.sin(i * 91.3458) * 47453.5453) % 1 + 1) % 1 * 0.35
+        // glatko zakašnjenje duž linije → kod se "uliva" u talasima, bez nazubljenja
+        for (let i = 0; i < n; i++) {
+          const u = (i / n) * Math.PI * 2
+          delay[i] = (0.5 + 0.3 * Math.sin(u * 2 + 1.3) + 0.2 * Math.sin(u * 5 + 0.4)) * 0.35
+        }
       }
 
-      glow = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, R * 1.4)
+      // sjaj mora da izbledi PRE ivice platna, inače se vidi kvadrat
+      glow = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, Math.min(R * 1.4, Math.min(w, h) * 0.5))
       glow.addColorStop(0, `rgba(${GLOW},0.55)`)
       glow.addColorStop(1, `rgba(${GLOW},0)`)
 

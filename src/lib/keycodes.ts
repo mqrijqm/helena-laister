@@ -115,7 +115,7 @@ function katharaGrid(): Stroke[] {
   const center: Pt[] = [[0, -0.88], [0, -0.44], [0, 0.0], [0, 0.44], [0, 0.88]]
   const sideL: Pt[] = [[-0.42, -0.66], [-0.42, -0.22], [-0.42, 0.22], [-0.42, 0.66]]
   const sideR: Pt[] = sideL.map(([x, y]) => [-x, y] as Pt)
-  const nodes = [...center, ...sideL.slice(0, 3), ...sideR.slice(0, 3), sideL[3]].slice(0, 12)
+  const nodes = [...center, ...sideL, ...sideR]
   const strokes: Stroke[] = []
   // vertikale
   strokes.push(poly(center, false), poly(sideL, false), poly(sideR, false))
@@ -173,7 +173,7 @@ export const KEY_CODES: KeyCode[] = [
   {
     id: 'kathara-grid',
     name: 'Kathara Grid',
-    line: 'Twelve points of the original blueprint, re-linked. A structure that can finally hold light.',
+    line: 'The points of the original blueprint, re-linked. A structure that can finally hold light.',
     strokes: katharaGrid(),
   },
   {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
@@ -11,7 +11,8 @@ gsap.registerPlugin(useGSAP, ScrollTrigger)
 
 /**
  * Statična linijska ilustracija koda (bela na lila, ili lila na crnoj).
- * `draw` = linija se iscrta kad uđe u ekran; `spin` = sporo okretanje.
+ * Svaki potez je zaseban <path> → `draw` ih iscrtava jedan za drugim kad uđu u ekran.
+ * (Jedan path sa više delova bi u Chrome-u ostao isprekidan zbog crtkanja po delovima.)
  */
 export default function CodeGlyph({
   code,
@@ -27,27 +28,39 @@ export default function CodeGlyph({
   spin?: boolean
 }) {
   const ref = useRef<SVGSVGElement>(null)
-  const d = useMemo(() => {
+  // debljina linije u jedinicama viewBox-a, tako da na ekranu bude `strokeWidth` px
+  const [userStroke, setUserStroke] = useState(0.01)
+  useEffect(() => {
+    const el = ref.current!
+    const ro = new ResizeObserver(([e]) => {
+      const w = e.contentRect.width || 1
+      setUserStroke((strokeWidth * 2.16) / w)
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [strokeWidth])
+  const paths = useMemo(() => {
     const c = KEY_CODES.find((k) => k.id === code) ?? KEY_CODES[0]
-    return strokesToPath(c.strokes)
+    return c.strokes.map((s) => strokesToPath([s]))
   }, [code])
 
   useGSAP(
     () => {
       if (!draw || prefersReducedMotion()) return
-      const path = ref.current!.querySelector('path')!
+      const els = ref.current!.querySelectorAll('path')
       gsap.fromTo(
-        path,
+        els,
         { strokeDasharray: 1, strokeDashoffset: 1 },
         {
           strokeDashoffset: 0,
-          duration: 3.2,
+          duration: 1.6,
           ease: 'power2.inOut',
+          stagger: { each: 0.12, from: 'start' },
           scrollTrigger: { trigger: ref.current, start: 'top 85%', once: true },
         },
       )
     },
-    { scope: ref, dependencies: [d] },
+    { scope: ref, dependencies: [paths] },
   )
 
   return (
@@ -58,15 +71,17 @@ export default function CodeGlyph({
       aria-hidden="true"
       className={`${spin ? 'animate-[spin_120s_linear_infinite] motion-reduce:animate-none' : ''} ${className}`}
     >
-      <path
-        d={d}
-        pathLength={1}
-        stroke="currentColor"
-        strokeWidth={strokeWidth}
-        vectorEffect="non-scaling-stroke"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      {paths.map((d, i) => (
+        <path
+          key={i}
+          d={d}
+          pathLength={1}
+          stroke="currentColor"
+          strokeWidth={userStroke}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      ))}
     </svg>
   )
 }

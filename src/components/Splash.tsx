@@ -113,7 +113,7 @@ export default function Splash() {
     raf = requestAnimationFrame(render)
     return () => {
       cancelAnimationFrame(raf)
-      intro.kill()
+      intro.revert() // vrati slova u početno stanje (kill bi ih ostavio nevidljive)
     }
   }, [])
 

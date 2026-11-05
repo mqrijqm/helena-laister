@@ -36,9 +36,9 @@ export default function Hero() {
   const code = KEY_CODES[label.i]
 
   return (
-    <section ref={ref} id="top" className="relative grid min-h-svh items-center overflow-hidden px-5 pb-16 pt-28 md:px-10 lg:grid-cols-[1.05fr_1fr]">
-      {/* tekst */}
-      <div className="relative z-10">
+    <section ref={ref} id="top" className="relative grid min-h-svh items-center overflow-hidden px-5 pb-16 pt-24 md:px-10 lg:grid-cols-[1.05fr_1fr] lg:pt-28">
+      {/* tekst (na mobilnom ispod koda) */}
+      <div className="relative z-10 order-2 lg:order-1">
         <p data-fade className="t-code neon">
           [ {HERO.eyebrow} ]
         </p>
@@ -67,12 +67,12 @@ export default function Hero() {
       {/* kod koji se sklapa i raspliće */}
       <div
         data-morph
-        className="pointer-events-none absolute inset-0 opacity-60 lg:pointer-events-auto lg:relative lg:inset-auto lg:h-[min(86svh,820px)] lg:opacity-100"
+        className="relative order-1 -mx-5 mb-2 h-[min(46svh,420px)] md:-mx-10 lg:order-2 lg:mx-0 lg:mb-0 lg:h-[min(86svh,820px)]"
       >
         <KeyCodeMorph chaos={3.4} hold={3.2} scale={0.4} onPhase={onPhase} />
         <p
           aria-live="polite"
-          className={`t-code absolute inset-x-0 bottom-6 text-center text-neon/80 transition-all duration-700 ease-(--ease-soft) ${label.on ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
+          className={`t-code absolute inset-x-0 bottom-0 text-center text-neon/80 lg:bottom-6 transition-all duration-700 ease-(--ease-soft) ${label.on ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
         >
           key code {String(label.i + 1).padStart(2, '0')} · {code.name}
         </p>

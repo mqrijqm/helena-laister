@@ -20,7 +20,7 @@ export default function Paths() {
             <li
               key={p.name}
               data-reveal
-              className="group grid grid-cols-[auto_1fr] items-start gap-x-6 gap-y-3 border-t border-lilac/20 py-9 transition-colors duration-700 hover:bg-lilac/[0.04] md:grid-cols-[4rem_7rem_1fr_1.4fr_auto] md:items-center md:gap-x-8 md:px-2"
+              className="group grid grid-cols-[auto_1fr] items-start gap-x-6 gap-y-3 border-t border-lilac/20 py-9 transition-colors duration-700 hover:bg-lilac/[0.04] md:grid-cols-[3rem_6rem_1fr_1.5fr_11rem] md:items-center md:gap-x-8 md:px-2"
             >
               <span className="t-code text-lilac/60">{String(i + 1).padStart(2, '0')}</span>
               <CodeGlyph
