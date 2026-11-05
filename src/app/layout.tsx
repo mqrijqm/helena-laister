@@ -3,6 +3,7 @@ import { Newsreader, Inter_Tight } from 'next/font/google'
 import SmoothScroll from '@/components/SmoothScroll'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Splash from '@/components/Splash'
 import './globals.css'
 
 // Varijabilni serif (zamena za Aime) — axis "opsz" daje finiji crtež na velikim veličinama
@@ -32,7 +33,12 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={`${newsreader.variable} ${interTight.variable} antialiased`}>
       <body className="min-h-dvh bg-paper text-ink">
+        {/* bez JS-a splash bi ostao zauvek — sakrij ga */}
+        <noscript>
+          <style>{'#splash{display:none!important}'}</style>
+        </noscript>
         <SmoothScroll>
+          <Splash />
           <Nav />
           <main>{children}</main>
           <Footer />

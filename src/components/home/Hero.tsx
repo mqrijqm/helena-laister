@@ -6,6 +6,7 @@ import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import SideCurves from '@/components/SideCurves'
 import { EASE, prefersReducedMotion } from '@/lib/motion'
+import { onSplashDone } from '@/lib/splash'
 
 gsap.registerPlugin(useGSAP)
 
@@ -15,8 +16,9 @@ export default function Hero() {
   useGSAP(
     () => {
       if (prefersReducedMotion()) return
-      gsap
-        .timeline({ delay: 0.15 })
+      const tl = gsap.timeline({ paused: true })
+      onSplashDone(() => tl.play())
+      tl
         .from('[data-hero-bg]', { scale: 1.08, duration: 2.4, ease: EASE.expo })
         .from('[data-hero-curves]', { autoAlpha: 0, duration: 2 }, 0.3)
         .from(

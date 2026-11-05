@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { EASE, prefersReducedMotion } from '@/lib/motion'
+import { onSplashDone } from '@/lib/splash'
 
 gsap.registerPlugin(useGSAP)
 
@@ -22,8 +23,9 @@ export default function PageHero({
   useGSAP(
     () => {
       if (prefersReducedMotion()) return
-      gsap
-        .timeline({ delay: 0.1 })
+      const tl = gsap.timeline({ paused: true })
+      onSplashDone(() => tl.play())
+      tl
         .from('[data-bg]', { scale: 1.08, duration: 2.4, ease: EASE.expo })
         .from('[data-line]', { yPercent: 105, duration: 1.4, ease: EASE.expo, stagger: 0.1 }, 0.3)
         .from('[data-fade]', { autoAlpha: 0, y: 16, duration: 1, stagger: 0.1, ease: EASE.out }, 0.8)
