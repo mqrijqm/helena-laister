@@ -2,20 +2,15 @@
 @import "lenis/dist/lenis.css";
 
 /* ------------------------------------------------------------------
-   Design tokens — white / beige / lavender
+   Tokeni — crna galaksija / lila / bela
    ------------------------------------------------------------------ */
 @theme {
-  --color-paper: #faf8f4;        /* glavna svetla pozadina */
+  --color-void: #05040a;          /* crna pozadina (galaksija) */
+  --color-lilac: #c2bef0;         /* main */
+  --color-lilac-deep: #b6ade9;    /* main — hover, akcenti */
+  --color-neon: #dcd6ff;          /* neon lila za tekst na crnoj */
+  --color-ink: #1c1633;           /* tamna ljubičasta za čitljiv tekst na lila */
   --color-white: #ffffff;
-  --color-beige: #e7dfd2;        /* beige sekcije */
-  --color-beige-soft: #f1ece4;   /* kartice, nav */
-  --color-lilac: #c2bef0;        /* main */
-  --color-lilac-deep: #b6ade9;   /* main — hover / aktivno */
-  --color-ink: #29272e;          /* tekst */
-  --color-mute: #6f6b75;         /* sekundarni tekst */
-  --color-line: rgb(41 39 46 / 0.18);
-  --color-grey: #b9b7bd;         /* placeholder slike */
-  --color-grey-deep: #7d7b82;
 
   --font-serif: var(--font-newsreader), Georgia, serif;
   --font-sans: var(--font-inter-tight), Arial, sans-serif;
@@ -24,8 +19,8 @@
 }
 
 html {
-  background: var(--color-paper);
-  color: var(--color-ink);
+  background: var(--color-void);
+  color: var(--color-white);
 }
 
 body {
@@ -34,207 +29,122 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+::selection {
+  background: var(--color-lilac);
+  color: var(--color-ink);
+}
+
 html.splash-lock,
 html.splash-lock body {
   overflow: hidden;
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-lilac-deep);
+  outline: 2px solid var(--color-lilac);
   outline-offset: 3px;
   border-radius: 6px;
 }
 
-::selection {
-  background: var(--color-lilac);
-  color: var(--color-ink);
-}
-
 /* ------------------------------------------------------------------
-   Tipografija — skalira se sa širinom ekrana (kao referenca, 1440 = osnova)
+   Tipografija
    ------------------------------------------------------------------ */
 @layer components {
-  .t-display {
+  .t-hero {
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: clamp(2.6rem, 4.6vw, 5.5rem);
-    line-height: 0.92;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
-  }
-  .t-h1 {
-    font-family: var(--font-serif);
-    font-weight: 300;
-    font-size: clamp(2.4rem, 5vw, 5.4rem);
-    line-height: 0.95;
-    letter-spacing: -0.025em;
+    font-size: clamp(2.7rem, 6.4vw, 7.2rem);
+    line-height: 0.94;
+    letter-spacing: -0.03em;
   }
   .t-h2 {
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: clamp(2.1rem, 4.2vw, 4.6rem);
-    line-height: 0.95;
+    font-size: clamp(2.3rem, 4.6vw, 5rem);
+    line-height: 0.96;
     letter-spacing: -0.025em;
   }
   .t-h3 {
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: clamp(1.8rem, 3.2vw, 3.4rem);
-    line-height: 1.02;
-    letter-spacing: -0.02em;
+    font-size: clamp(1.6rem, 2.4vw, 2.6rem);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
   }
   .t-lead {
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: clamp(1.4rem, 2.6vw, 2.7rem);
-    line-height: 1.12;
-    letter-spacing: -0.015em;
-  }
-  .t-para {
-    font-family: var(--font-serif);
-    font-weight: 300;
-    font-size: clamp(1.2rem, 1.75vw, 1.85rem);
-    line-height: 1.28;
-    letter-spacing: -0.01em;
-  }
-  .t-title {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(1.15rem, 1.35vw, 1.5rem);
-    line-height: 1.12;
+    font-size: clamp(1.3rem, 1.9vw, 2rem);
+    line-height: 1.25;
     letter-spacing: -0.01em;
   }
   .t-body {
-    font-size: clamp(0.875rem, 0.95vw, 1.05rem);
-    line-height: 1.42;
-    letter-spacing: -0.005em;
+    font-size: clamp(0.95rem, 1vw, 1.1rem);
+    line-height: 1.55;
   }
-  .t-small {
-    font-size: clamp(0.78rem, 0.82vw, 0.92rem);
-    line-height: 1.35;
-  }
-  .t-tag {
-    font-family: var(--font-serif);
-    font-size: clamp(0.78rem, 0.85vw, 0.95rem);
-    line-height: 1;
-  }
-  .t-eyebrow {
-    font-family: var(--font-serif);
-    font-size: clamp(0.78rem, 0.85vw, 0.95rem);
-    letter-spacing: 0.02em;
+  .t-code {
+    font-family: var(--font-mono);
+    font-size: clamp(0.7rem, 0.75vw, 0.82rem);
+    letter-spacing: 0.14em;
     text-transform: uppercase;
   }
 
-  /* Dugmad */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    min-height: 3.2rem;
-    padding: 0 clamp(1.8rem, 3.4vw, 3.3rem);
-    border-radius: 8px;
+    gap: 0.6rem;
+    min-height: 3.1rem;
+    padding: 0 1.6rem;
+    border-radius: 999px;
     border: 1px solid transparent;
-    font-family: var(--font-serif);
-    font-size: clamp(0.9rem, 0.95vw, 1.05rem);
-    letter-spacing: -0.01em;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     transition:
-      background-color 0.4s var(--ease-soft),
-      color 0.4s var(--ease-soft),
-      border-color 0.4s var(--ease-soft);
+      background-color 0.5s var(--ease-soft),
+      color 0.5s var(--ease-soft),
+      border-color 0.5s var(--ease-soft),
+      box-shadow 0.5s var(--ease-soft);
   }
   .btn-lilac {
-    background: var(--color-lilac-deep);
+    background: var(--color-lilac);
     color: var(--color-ink);
   }
   .btn-lilac:hover {
-    background: var(--color-lilac);
+    background: var(--color-white);
+    box-shadow: 0 0 32px rgb(194 190 240 / 0.6);
   }
-  .btn-light {
-    background: var(--color-beige-soft);
-    color: var(--color-ink);
+  .btn-ghost {
+    border-color: rgb(194 190 240 / 0.45);
+    color: var(--color-neon);
   }
-  .btn-light:hover {
-    background: var(--color-lilac);
+  .btn-ghost:hover {
+    border-color: var(--color-lilac);
+    box-shadow: 0 0 24px rgb(194 190 240 / 0.35);
   }
-  .btn-ghost-light {
-    border-color: rgb(255 255 255 / 0.55);
+  .btn-ink {
+    background: var(--color-ink);
     color: var(--color-white);
   }
-  .btn-ghost-light:hover {
-    background: rgb(255 255 255 / 0.12);
-    border-color: var(--color-white);
-  }
-
-  .tag {
-    display: inline-flex;
-    align-items: center;
-    height: 2.25rem;
-    padding: 0 0.75rem;
-    border-radius: 4px;
-    background: rgb(231 223 210 / 0.75);
+  .btn-ink:hover {
+    background: var(--color-void);
   }
 }
 
-/* Grey placeholder — mesto za buduću sliku/video */
-.placeholder-grey {
-  background:
-    radial-gradient(120% 90% at 20% 15%, rgb(255 255 255 / 0.28), transparent 55%),
-    radial-gradient(90% 80% at 85% 90%, rgb(0 0 0 / 0.12), transparent 60%),
-    var(--color-grey);
-}
-.placeholder-grey-dark {
-  background:
-    radial-gradient(70% 60% at 25% 30%, rgb(255 255 255 / 0.18), transparent 60%),
-    radial-gradient(60% 70% at 80% 75%, rgb(194 190 240 / 0.12), transparent 65%),
-    linear-gradient(160deg, #8d8b92 0%, #6c6a71 45%, #4b4a50 100%);
+/* neon sjaj za tekst na crnoj */
+.neon {
+  color: var(--color-neon);
+  text-shadow:
+    0 0 12px rgb(143 124 240 / 0.55),
+    0 0 36px rgb(143 124 240 / 0.25);
 }
 
-/* ------------------------------------------------------------------
-   Pipeline (home) — kriva linija sa tačkama
-   ------------------------------------------------------------------ */
-.timeline-item {
-  position: absolute;
-  opacity: 0;
-  transition:
-    opacity 0.6s var(--ease-soft),
-    transform 0.6s var(--ease-soft);
-  transform: translateY(12px);
-}
-.timeline-item.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.timeline-dot {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--color-white);
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 0 6px rgb(255 255 255 / 0.12);
-}
-.timeline-panel {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: clamp(220px, 26vw, 380px);
-}
-.timeline-item[data-side="left"] .timeline-panel {
-  transform: translate(calc(-100% - 48px), -50%);
-}
-.timeline-item[data-side="right"] .timeline-panel {
-  transform: translate(48px, -50%);
-}
-
-/* Skrivanje scrollbara za horizontalne trake na mobilnom */
-.no-scrollbar {
-  scrollbar-width: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+/* sivi placeholder za buduću fotografiju (na lila) */
+.photo-placeholder {
+  background:
+    radial-gradient(90% 70% at 30% 20%, rgb(255 255 255 / 0.35), transparent 60%),
+    linear-gradient(160deg, #a9a3dd, #8e86cf);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -4,9 +4,10 @@ import SmoothScroll from '@/components/SmoothScroll'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import Splash from '@/components/Splash'
+import Galaxy from '@/components/Galaxy'
 import './globals.css'
 
-// Varijabilni serif (zamena za Aime) — axis "opsz" daje finiji crtež na velikim veličinama
+// Veliki, tanak serif za naslove (varijabilni; axis "opsz" daje finiji crtež na velikim veličinama)
 const newsreader = Newsreader({
   variable: '--font-newsreader',
   subsets: ['latin'],
@@ -14,29 +15,27 @@ const newsreader = Newsreader({
   style: ['normal', 'italic'],
 })
 
-// Grotesk (zamena za Neue Montreal)
+// Čist grotesk za tekst
 const interTight = Inter_Tight({
   variable: '--font-inter-tight',
   subsets: ['latin'],
 })
 
 export const metadata: Metadata = {
-  title: {
-    default: 'Helen — Breathwork',
-    template: '%s • Helen Breathwork',
-  },
+  title: 'Helena Laister — Key Codes, Activation & Guidance',
   description:
-    'Guided breathwork sessions, teacher training and a weekly studio practice for a calmer nervous system.',
+    'A home outside the algorithm. 1:1 activations, guidance and live teachings on Krystic ascension mechanics, merkaba and key codes.',
 }
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={`${newsreader.variable} ${interTight.variable} antialiased`}>
-      <body className="min-h-dvh bg-paper text-ink">
+      <body className="min-h-dvh text-white">
         {/* bez JS-a splash bi ostao zauvek — sakrij ga */}
         <noscript>
           <style>{'#splash{display:none!important}'}</style>
         </noscript>
+        <Galaxy />
         <SmoothScroll>
           <Splash />
           <Nav />

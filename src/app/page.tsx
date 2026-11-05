@@ -1,15 +1,20 @@
-import Hero from '@/components/home/Hero'
-import AppShowcase from '@/components/home/AppShowcase'
-import IntroStrip from '@/components/home/IntroStrip'
-import Pipeline from '@/components/home/Pipeline'
+import Hero from '@/components/sections/Hero'
+import Why from '@/components/sections/Why'
+import Paths from '@/components/sections/Paths'
+import About from '@/components/sections/About'
+import KeyCodes from '@/components/sections/KeyCodes'
+import Contact from '@/components/sections/Contact'
 
+// Tok: crna (galaksija) → lila → crna → lila → crna → lila
 export default function Home() {
   return (
     <>
       <Hero />
-      <AppShowcase />
-      <IntroStrip />
-      <Pipeline />
+      <Why />
+      <Paths />
+      <About />
+      <KeyCodes />
+      <Contact />
     </>
   )
 }

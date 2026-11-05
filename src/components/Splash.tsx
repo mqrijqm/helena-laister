@@ -5,8 +5,10 @@ import { useLenis } from 'lenis/react'
 import gsap from 'gsap'
 import { markSplashDone } from '@/lib/splash'
 import { prefersReducedMotion } from '@/lib/motion'
+import { KEY_CODES, strokesToPath } from '@/lib/keycodes'
 
-const LETTERS = ['H', 'E', 'L', 'E', 'N']
+const LETTERS = ['H', 'E', 'L', 'E', 'N', 'A']
+const MERKABA_PATH = strokesToPath(KEY_CODES.find((k) => k.id === 'merkaba')!.strokes)
 const MIN_DURATION = 1800 // ms — da splash ne "trepne" na brzoj vezi
 
 /**
@@ -126,10 +128,15 @@ export default function Splash() {
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={0}
-      className="fixed inset-0 z-[1000] grid place-items-center bg-black text-white select-none"
+      className="fixed inset-0 z-[1000] grid place-items-center bg-void text-white select-none"
     >
       <div className="relative grid size-[min(444px,78vw,62vh)] place-items-center">
-        <svg data-splash-ring viewBox="0 0 100 100" aria-hidden="true" className="absolute inset-0 size-full overflow-visible">
+        <svg
+          data-splash-ring
+          viewBox="0 0 100 100"
+          aria-hidden="true"
+          className="absolute inset-0 size-full overflow-visible drop-shadow-[0_0_6px_rgba(143,124,240,0.9)]"
+        >
           {/* krug kreće sa desne strane (3 h) i crta se u smeru kazaljke */}
           <circle
             ref={arcRef}
@@ -138,18 +145,16 @@ export default function Splash() {
             r="49.5"
             pathLength={100}
             fill="none"
-            stroke="white"
-            strokeWidth="0.2252"
+            stroke="#c2bef0"
+            strokeWidth="0.26"
             strokeDasharray="0 100"
             shapeRendering="geometricPrecision"
           />
         </svg>
 
         <div data-splash-logo className="flex items-center gap-[0.35em] font-serif text-[clamp(1.6rem,calc(min(444px,78vw,62vh)*0.085),2.4rem)] leading-none font-light tracking-[0.06em]">
-          <svg data-splash-icon viewBox="0 0 40 40" fill="none" aria-hidden="true" className="size-[1.15em]">
-            <ellipse cx="20" cy="20" rx="15" ry="15.6" stroke="currentColor" strokeWidth="1.4" />
-            <ellipse cx="20.6" cy="19.6" rx="14.2" ry="15" stroke="currentColor" strokeWidth="0.9" opacity="0.7" />
-            <ellipse cx="19.4" cy="20.4" rx="15.4" ry="14.4" stroke="currentColor" strokeWidth="0.6" opacity="0.5" />
+          <svg data-splash-icon viewBox="-1.08 -1.08 2.16 2.16" fill="none" aria-hidden="true" className="size-[1.2em] text-lilac">
+            <path d={MERKABA_PATH} stroke="currentColor" strokeWidth="1.1" vectorEffect="non-scaling-stroke" />
           </svg>
           <span aria-hidden="true" className="flex">
             {LETTERS.map((l, i) => (
@@ -158,7 +163,7 @@ export default function Splash() {
               </span>
             ))}
           </span>
-          <span className="sr-only">Helen</span>
+          <span className="sr-only">Helena Laister</span>
         </div>
       </div>
 
@@ -166,7 +171,7 @@ export default function Splash() {
         data-splash-meta
         className="pointer-events-none absolute inset-x-0 bottom-[max(28px,env(safe-area-inset-bottom))] flex flex-col items-center gap-0.5"
       >
-        <span className="font-mono text-[14px] leading-[1.3] text-[#808080]">[loading status]</span>
+        <span className="font-mono text-[14px] leading-[1.3] text-lilac/60">[aligning frequency]</span>
         <span className="text-[16px] leading-[1.2]">
           <span ref={numRef}>0</span>%
         </span>
