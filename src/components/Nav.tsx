@@ -1,16 +1,17 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useEffect, useRef, useState } from 'react'
+import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
+import CodeGlyph from './CodeGlyph'
 import { useAmbientSound } from './useAmbientSound'
+import { ROUTES } from '@/lib/routes'
 import { SITE } from '@/lib/content'
+import { EASE } from '@/lib/motion'
 
-const LINKS = [
-  { href: '#why', label: 'why' },
-  { href: '#paths', label: 'paths' },
-  { href: '#who', label: 'who i am' },
-  { href: '#codes', label: 'key codes' },
-  { href: '#contact', label: 'contact' },
-]
+gsap.registerPlugin(useGSAP)
 
 function SoundBars({ on }: { on: boolean }) {
   return (
@@ -26,81 +27,109 @@ function SoundBars({ on }: { on: boolean }) {
   )
 }
 
+/** Stari UX (pilula: Sound · znak · Menu, padajući numerisani meni) u tamnom staklu. */
 export default function Nav() {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
   const sound = useAmbientSound()
+  const rootRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const tl = useRef<gsap.core.Timeline | null>(null)
+
+  useGSAP(
+    () => {
+      gsap.set(panelRef.current, { autoAlpha: 0, clipPath: 'inset(0% 0% 100% 0% round 24px)' })
+      tl.current = gsap
+        .timeline({ paused: true })
+        .to(panelRef.current, { autoAlpha: 1, clipPath: 'inset(0% 0% 0% 0% round 24px)', duration: 0.7, ease: EASE.expo })
+        .from('[data-menu-item]', { y: 14, autoAlpha: 0, duration: 0.5, stagger: 0.05, ease: EASE.out }, 0.12)
+    },
+    { scope: rootRef },
+  )
+
+  useEffect(() => {
+    if (!tl.current) return
+    if (open) tl.current.timeScale(1).play()
+    else tl.current.timeScale(1.6).reverse()
+  }, [open])
 
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
+    const onDown = (e: PointerEvent) => !rootRef.current?.contains(e.target as Node) && setOpen(false)
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    window.addEventListener('pointerdown', onDown)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('pointerdown', onDown)
+    }
   }, [open])
 
   return (
-    <header className="fixed inset-x-0 top-3 z-50 px-3 md:top-4 md:px-6">
-      <div className="mx-auto flex h-14 max-w-[1400px] items-center justify-between gap-4 rounded-full border border-lilac/20 bg-void/55 pl-5 pr-2 backdrop-blur-md">
-        <a href="#top" className="font-serif text-[1.15rem] font-light tracking-tight text-white">
-          {SITE.name.toLowerCase()}
-        </a>
+    <div ref={rootRef} className="fixed left-1/2 top-4 z-50 w-[min(calc(100vw-24px),400px)] -translate-x-1/2">
+      <header className="grid h-[58px] grid-cols-[1fr_auto_1fr] items-center rounded-full border border-lilac/25 bg-void/60 px-4 text-white backdrop-blur-md">
+        <button
+          type="button"
+          onClick={sound.toggle}
+          aria-pressed={sound.on}
+          className="t-code flex items-center gap-2 justify-self-start text-white/65 transition-colors hover:text-neon"
+        >
+          <SoundBars on={sound.on} />
+          sound
+        </button>
 
-        <nav aria-label="Sections" className="hidden lg:block">
-          <ul className="flex gap-7">
-            {LINKS.map((l) => (
-              <li key={l.href}>
-                <a href={l.href} className="t-code text-white/60 transition-colors hover:text-neon">
-                  {l.label}
-                </a>
-              </li>
-            ))}
+        <Link href="/" aria-label={`${SITE.name} — home`} className="text-lilac drop-shadow-[0_0_8px_rgba(143,124,240,0.8)]">
+          <CodeGlyph code="merkaba" spin draw={false} strokeWidth={1.1} className="size-9" />
+        </Link>
+
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls="site-menu"
+          className="t-code flex items-center gap-2 justify-self-end text-white/65 transition-colors hover:text-neon"
+        >
+          {open ? 'close' : 'menu'}
+          <span className="relative block size-3" aria-hidden="true">
+            <span className={`absolute left-1/2 top-1/2 size-[4px] rounded-full bg-lilac transition-transform duration-500 ease-(--ease-soft) ${open ? '-translate-x-[6px] -translate-y-1/2' : '-translate-x-1/2 -translate-y-[6px]'}`} />
+            <span className={`absolute left-1/2 top-1/2 size-[4px] rounded-full bg-lilac transition-transform duration-500 ease-(--ease-soft) ${open ? 'translate-x-[2px] -translate-y-1/2' : '-translate-x-1/2 translate-y-[2px]'}`} />
+          </span>
+        </button>
+      </header>
+
+      <div ref={panelRef} id="site-menu" className="invisible mt-2 rounded-3xl border border-lilac/25 bg-void/80 backdrop-blur-md">
+        <nav aria-label="Main">
+          <ul className="px-2 pt-2">
+            {ROUTES.map((r, i) => {
+              const active = pathname === r.href
+              return (
+                <li key={r.href} data-menu-item className="border-b border-lilac/15">
+                  <Link
+                    href={r.href}
+                    onClick={() => setOpen(false)}
+                    aria-current={active ? 'page' : undefined}
+                    className="group flex items-baseline gap-4 px-3 py-3 text-white"
+                  >
+                    <span className="t-code w-5 text-lilac/50">{String(i + 1).padStart(2, '0')}</span>
+                    <span className="relative font-serif text-[1.35rem] font-light leading-tight">
+                      {r.label}
+                      <span className={`absolute -bottom-0.5 left-0 h-px w-full origin-left bg-lilac shadow-[0_0_8px_#8f7cf0] transition-transform duration-500 ease-(--ease-soft) ${active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`} />
+                    </span>
+                  </Link>
+                </li>
+              )
+            })}
           </ul>
         </nav>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={sound.toggle}
-            aria-pressed={sound.on}
-            className="t-code flex h-10 items-center gap-2 rounded-full px-3 text-white/60 transition-colors hover:text-neon"
-          >
-            <SoundBars on={sound.on} />
-            <span className="hidden sm:inline">sound</span>
-          </button>
-          <a href="#contact" className="btn btn-lilac hidden min-h-10! px-5! sm:inline-flex">
+        <div data-menu-item className="flex items-center justify-between p-4 pt-8">
+          <Link href="/#contact" onClick={() => setOpen(false)} className="btn btn-lilac min-h-10! px-5!">
             book
+          </Link>
+          <a href={SITE.instagram} target="_blank" rel="noreferrer" className="t-code text-white/50 hover:text-neon">
+            @{SITE.handle}
           </a>
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            className="t-code h-10 rounded-full px-4 text-white lg:hidden"
-          >
-            {open ? 'close' : 'menu'}
-          </button>
         </div>
       </div>
-
-      {/* mobilni meni */}
-      <div
-        id="mobile-menu"
-        className={`mx-auto mt-2 max-w-[1400px] overflow-hidden rounded-3xl border border-lilac/20 bg-void/85 backdrop-blur-md transition-all duration-500 ease-(--ease-soft) lg:hidden ${open ? 'max-h-96 opacity-100' : 'pointer-events-none max-h-0 opacity-0'}`}
-      >
-        <ul className="p-3">
-          {LINKS.map((l, i) => (
-            <li key={l.href} className="border-b border-lilac/10 last:border-0">
-              <a
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="flex items-baseline gap-4 px-3 py-3 font-serif text-[1.4rem] font-light text-white"
-              >
-                <span className="t-code text-lilac/50">{String(i + 1).padStart(2, '0')}</span>
-                {l.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </header>
+    </div>
   )
 }

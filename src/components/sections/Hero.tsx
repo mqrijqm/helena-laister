@@ -1,44 +1,45 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
-import KeyCodeMorph, { type MorphPhase } from '@/components/KeyCodeMorph'
 import { KEY_CODES } from '@/lib/keycodes'
 import { HERO } from '@/lib/content'
 import { EASE, prefersReducedMotion } from '@/lib/motion'
 import { onSplashDone } from '@/lib/splash'
+import { useMorphState } from '@/lib/morphBus'
 
 gsap.registerPlugin(useGSAP)
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null)
-  const [label, setLabel] = useState<{ i: number; on: boolean }>({ i: 0, on: false })
-
-  const onPhase = (i: number, p: MorphPhase) =>
-    setLabel((prev) => {
-      const on = p === 'formed'
-      return prev.i === i && prev.on === on ? prev : { i, on }
-    })
+  const morph = useMorphState()
+  const formed = morph.phase === 'formed'
 
   useGSAP(
     () => {
       if (prefersReducedMotion()) return
       const tl = gsap.timeline({ paused: true })
       onSplashDone(() => tl.play())
-      tl.from('[data-line]', { yPercent: 110, duration: 1.6, ease: EASE.expo, stagger: 0.09 })
-        .from('[data-fade]', { autoAlpha: 0, y: 14, duration: 1.1, stagger: 0.1, ease: EASE.out }, 0.5)
-        .from('[data-morph]', { autoAlpha: 0, scale: 0.92, duration: 2.4, ease: EASE.out }, 0)
+      tl.from('[data-line]', { yPercent: 110, duration: 1.6, ease: EASE.expo, stagger: 0.09 }).from(
+        '[data-fade]',
+        { autoAlpha: 0, y: 14, duration: 1.1, stagger: 0.1, ease: EASE.out },
+        0.5,
+      )
     },
     { scope: ref },
   )
 
-  const code = KEY_CODES[label.i]
-
   return (
-    <section ref={ref} id="top" className="relative grid min-h-svh items-center overflow-hidden px-5 pb-16 pt-24 md:px-10 lg:grid-cols-[1.05fr_1fr] lg:pt-28">
-      {/* tekst (na mobilnom ispod koda) */}
-      <div className="relative z-10 order-2 lg:order-1">
+    // data-stage="right" → glavna animacija stoji desno od teksta
+    <section
+      ref={ref}
+      id="top"
+      data-stage="right"
+      data-stage-mobile="top"
+      className="relative flex min-h-svh flex-col justify-end px-5 pb-16 pt-[46svh] md:px-10 lg:justify-center lg:pt-28"
+    >
+      <div className="relative z-10 lg:max-w-[52%]">
         <p data-fade className="t-code neon">
           [ {HERO.eyebrow} ]
         </p>
@@ -64,19 +65,13 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* kod koji se sklapa i raspliće */}
-      <div
-        data-morph
-        className="relative order-1 -mx-5 mb-2 h-[min(46svh,420px)] md:-mx-10 lg:order-2 lg:mx-0 lg:mb-0 lg:h-[min(86svh,820px)]"
+      {/* naziv koda koji je trenutno složen */}
+      <p
+        aria-live="polite"
+        className={`t-code absolute inset-x-0 top-[40svh] text-center text-neon/80 transition-all duration-700 ease-(--ease-soft) lg:inset-x-auto lg:top-auto lg:bottom-10 lg:right-[24%] lg:translate-x-1/2 ${formed ? 'opacity-100' : 'opacity-0'}`}
       >
-        <KeyCodeMorph chaos={3.4} hold={3.2} scale={0.4} onPhase={onPhase} />
-        <p
-          aria-live="polite"
-          className={`t-code absolute inset-x-0 bottom-0 text-center text-neon/80 lg:bottom-6 transition-all duration-700 ease-(--ease-soft) ${label.on ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
-        >
-          key code {String(label.i + 1).padStart(2, '0')} · {code.name}
-        </p>
-      </div>
+        key code {String(morph.i + 1).padStart(2, '0')} · {KEY_CODES[morph.i].name}
+      </p>
 
       <a
         href="#why"

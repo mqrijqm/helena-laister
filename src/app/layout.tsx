@@ -5,6 +5,7 @@ import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import Splash from '@/components/Splash'
 import Galaxy from '@/components/Galaxy'
+import MorphStage from '@/components/MorphStage'
 import './globals.css'
 
 // Veliki, tanak serif za naslove (varijabilni; axis "opsz" daje finiji crtež na velikim veličinama)
@@ -36,6 +37,8 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           <style>{'#splash{display:none!important}'}</style>
         </noscript>
         <Galaxy />
+        {/* jedna, glavna animacija — živi iza svih stranica */}
+        <MorphStage />
         <SmoothScroll>
           <Splash />
           <Nav />

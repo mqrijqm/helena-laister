@@ -1,10 +1,11 @@
+import Link from 'next/link'
 import Reveal from '@/components/Reveal'
 import CodeGlyph from '@/components/CodeGlyph'
 import { PATHS } from '@/lib/content'
 
 export default function Paths() {
   return (
-    <section id="paths" className="relative px-5 py-[clamp(6rem,12vw,11rem)] md:px-10">
+    <section id="paths" data-stage="dim" className="relative px-5 py-[clamp(6rem,12vw,11rem)] md:px-10">
       <Reveal className="grid gap-8 lg:grid-cols-[1fr_1fr]">
         <h2 data-reveal className="t-h2 neon max-w-[12ch]">
           {PATHS.title}
@@ -34,6 +35,11 @@ export default function Paths() {
             </li>
           ))}
         </ol>
+        <div data-reveal className="border-t border-lilac/20 pt-10">
+          <Link href="/paths" className="btn btn-ghost">
+            explore every path <span aria-hidden="true">→</span>
+          </Link>
+        </div>
       </Reveal>
     </section>
   )
